@@ -1,13 +1,22 @@
 import React from "react";
-import persons from "../service/persons";
 import personService from "../service/persons";
 
-const Persons = ({ personsToShow, persons, setPersons }) => {
+const Persons = ({ personsToShow, persons, setPersons, handleMessage }) => {
   const handleDeletePerson = (person) => {
     if (window.confirm(`Delete ${person.name}?`)) {
-      personService.remove(person.id).then(() => {
-        setPersons(persons.filter((p) => p.id !== person.id));
-      });
+      personService
+        .remove(person.id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== person.id));
+          handleMessage(false, `Deleted ${person.name}.`);
+        })
+        .catch(() => {
+          handleMessage(
+            false,
+            `Information of ${person.name} has been already been removed from server.`
+          );
+          setPersons(persons.filter((p) => p.id !== person.id));
+        });
     }
   };
   return (

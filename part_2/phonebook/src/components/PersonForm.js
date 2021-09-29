@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import personService from "./../service/persons";
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, handleMessage }) => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const handleChangeName = (event) => {
@@ -28,14 +28,24 @@ const PersonForm = ({ persons, setPersons }) => {
         const id = filteredPersons[0].id;
         personService
           .update(id, newPerson)
-          .then((updatedData) =>
-            setPersons(persons.map((p) => (p.id === id ? updatedData : p)))
-          );
+          .then((updatedData) => {
+            setPersons(persons.map((p) => (p.id === id ? updatedData : p)));
+            handleMessage(true, `Updated ${newName}.`);
+          })
+          .catch(() => {
+            handleMessage(false, `Failed to update ${newName}.`);
+          });
       }
     } else {
       personService
         .create(newPerson)
-        .then((returnedData) => setPersons(persons.concat(returnedData)));
+        .then((returnedData) => {
+          setPersons(persons.concat(returnedData));
+          handleMessage(true, `Added ${newName}.`);
+        })
+        .catch(() => {
+          handleMessage(false, `Failed to add ${newName}.`);
+        });
       setNewName("");
       setNewNumber("");
     }
