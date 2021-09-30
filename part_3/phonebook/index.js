@@ -7,6 +7,7 @@ morgan.token("person", (req, res) => {
 });
 
 const app = express();
+app.use(express.static("build"));
 app.use(express.json());
 app.use(cors());
 app.use(
