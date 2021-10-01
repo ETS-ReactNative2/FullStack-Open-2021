@@ -32,8 +32,8 @@ const PersonForm = ({ persons, setPersons, handleMessage }) => {
             setPersons(persons.map((p) => (p.id === id ? updatedData : p)));
             handleMessage(true, `Updated ${newName}.`);
           })
-          .catch(() => {
-            handleMessage(false, `Failed to update ${newName}.`);
+          .catch((error) => {
+            handleMessage(false, error.response.data.error);
           });
       }
     } else {
@@ -43,12 +43,12 @@ const PersonForm = ({ persons, setPersons, handleMessage }) => {
           setPersons(persons.concat(returnedData));
           handleMessage(true, `Added ${newName}.`);
         })
-        .catch(() => {
-          handleMessage(false, `Failed to add ${newName}.`);
+        .catch((error) => {
+          handleMessage(false, error.response.data.error);
         });
-      setNewName("");
-      setNewNumber("");
     }
+    setNewName("");
+    setNewNumber("");
   };
 
   return (

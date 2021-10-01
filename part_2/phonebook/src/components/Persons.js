@@ -8,7 +8,7 @@ const Persons = ({ personsToShow, persons, setPersons, handleMessage }) => {
         .remove(person.id)
         .then(() => {
           setPersons(persons.filter((p) => p.id !== person.id));
-          handleMessage(false, `Deleted ${person.name}.`);
+          handleMessage(true, `Deleted ${person.name}.`);
         })
         .catch(() => {
           handleMessage(
