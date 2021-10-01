@@ -1,5 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+
+const Person = require("./models/person");
 const morgan = require("morgan");
 morgan.token("person", (req, res) => {
   if (req.method === "POST") return JSON.stringify(req.body);
@@ -40,10 +43,8 @@ let persons = [
 ];
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const foundPerson = persons.find((person) => person.id === id);
-  if (foundPerson) response.json(foundPerson);
-  else response.status(404).end();
+  const id = request.params.id;
+  Person.findById(id).then((returnedNote) => response.json(returnedNote));
 });
 
 app.delete("/api/persons/:id", (resquest, response) => {
@@ -60,24 +61,22 @@ app.post("/api/persons", (request, response) => {
   if (!number)
     return response.status(400).json({ error: "Number is missing." });
 
-  const filterdPersonName = persons.filter(
-    (person) => person.name === personName
-  );
-  if (filterdPersonName.length > 0)
-    return response.status(400).json({ error: "Person name must be unique`." });
+  // const filterdPersonName = persons.filter(
+  //   (person) => person.name === personName
+  // );
+  // if (filterdPersonName.length > 0)
+  //   return response.status(400).json({ error: "Person name must be unique`." });
 
-  const newPerson = {
+  const newPerson = new Person({
     name: personName,
     number: number,
-    id: Math.floor(Math.random() * 9999999),
-  };
+  });
 
-  persons = persons.concat(newPerson);
-  response.json(newPerson);
+  newPerson.save().then((savedPerson) => response.json(savedPerson));
 });
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((returnedPersons) => response.json(returnedPersons));
 });
 
 app.get("/info", (request, response) => {
@@ -96,7 +95,7 @@ app.get("/info", (request, response) => {
   response.send();
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
