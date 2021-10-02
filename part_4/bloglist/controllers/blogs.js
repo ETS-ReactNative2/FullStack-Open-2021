@@ -8,6 +8,9 @@ BlogRouter.get("/", (request, response) => {
 });
 
 BlogRouter.post("/", (request, response) => {
+  if (!request.body.url || !request.body.title)
+    return response.status(400).end();
+
   const blog = new Blog(request.body);
 
   blog.save().then((result) => {

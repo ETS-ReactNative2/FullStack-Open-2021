@@ -8,6 +8,7 @@ const logger = require("./utils/logger");
 const mongoose = require("mongoose");
 
 const mongoUrl = config.MONGODB_URI;
+
 mongoose
   .connect(mongoUrl)
   .then(() => {
