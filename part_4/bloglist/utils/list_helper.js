@@ -72,6 +72,6 @@ module.exports = {
   dummy,
   totalLikes,
   favorateBlog,
-  mostBlogs,
   mostLikes,
+  mostBlogs,
 };
