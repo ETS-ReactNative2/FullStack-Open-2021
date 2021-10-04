@@ -8,7 +8,7 @@ userRouter.post("/", async (request, response) => {
   if (password.length < 3)
     return response.status(400).json({
       error:
-        "User validation failed: password: Path `password` (`n`) is shorter than the minimum allowed length (3).",
+        "User validation failed: password: Path `password` is shorter than the minimum allowed length (3).",
     });
 
   const saltRounds = 10;
