@@ -17,8 +17,8 @@ BlogRouter.get("/:id", async (request, response) => {
 });
 
 BlogRouter.post("/", async (request, response) => {
-  const decodedToken = jwt.verify(request.token, config.SECRET);
-  if (!decodedToken.id)
+  const user = request.user;
+  if (!user)
     return response.status(401).json({ error: "token is missing or invalid" });
 
   const { title, url, author, likes } = request.body;
@@ -26,7 +26,6 @@ BlogRouter.post("/", async (request, response) => {
 
   if (!title) return response.status(400).json({ error: "Title is missing" });
 
-  const user = await User.findById(decodedToken.id);
   const blog = new Blog({
     url,
     title,
@@ -37,24 +36,19 @@ BlogRouter.post("/", async (request, response) => {
 
   const addedBlog = await blog.save();
   const blogs = user.blogs.concat(addedBlog._id);
-  console.log(blogs);
-  await User.findByIdAndUpdate(decodedToken.id, { blogs });
+  await User.findByIdAndUpdate(user._id.toString(), { blogs });
   response.status(201).json(addedBlog);
 });
 
 BlogRouter.delete("/:id", async (request, response) => {
-  const decodedToken = jwt.verify(request.token, config.SECRET);
+  const user = request.user;
   const id = request.params.id;
   const blogToDelete = await Blog.findById(id);
-  if (
-    !decodedToken.id ||
-    decodedToken.id.toString() !== blogToDelete.user.toString()
-  )
+  if (!user || user._id.toString() !== blogToDelete.user.toString())
     return response.status(401).json({ error: "permission denied" });
-  const user = await User.findById(decodedToken.id);
   await Blog.findByIdAndRemove(id);
   const blogs = user.blogs.filter((blog) => blog.toString() !== id);
-  await User.findByIdAndUpdate(decodedToken.id, { blogs });
+  await User.findByIdAndUpdate(user._id.toString(), { blogs });
   response.status(204).end();
 });
 
