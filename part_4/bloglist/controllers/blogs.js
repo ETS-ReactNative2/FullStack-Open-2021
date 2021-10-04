@@ -45,7 +45,7 @@ BlogRouter.delete("/:id", async (request, response) => {
   const id = request.params.id;
   const blogToDelete = await Blog.findById(id);
   if (!user || user._id.toString() !== blogToDelete.user.toString())
-    return response.status(401).json({ error: "permission denied" });
+    return response.status(403).json({ error: "permission denied" });
   await Blog.findByIdAndRemove(id);
   const blogs = user.blogs.filter((blog) => blog.toString() !== id);
   await User.findByIdAndUpdate(user._id.toString(), { blogs });

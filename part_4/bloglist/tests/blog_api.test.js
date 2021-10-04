@@ -134,6 +134,54 @@ describe("addition of new blog", () => {
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initBlogs.length);
   });
+
+  test("fail create new blog without token", async () => {
+    const newBlog = {
+      author: "Nemo",
+      title: "Learning fullstack",
+      url: "learning.com",
+      likes: 13,
+    };
+    const response = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(401)
+      .expect("Content-Type", /application\/json/);
+
+    expect(response.body.error).toBe("token is missing or invalid");
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const titles = blogsAtEnd.map((blog) => blog.title);
+
+    expect(blogsAtEnd).toHaveLength(helper.initBlogs.length);
+    expect(titles).not.toContain("Learning fullstack");
+  });
+
+  test("fail create new blog with an invalid token", async () => {
+    const newBlog = {
+      author: "Nemo",
+      title: "Learning fullstack",
+      url: "learning.com",
+      likes: 13,
+    };
+    const response = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set({
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjYxNWIyMTQ5ZmJmNDNiNzRmNWE3NTg1YiIsImlhdCI6MTYzMzM2MjI1NH0.jubqmGYPlnJiqAae5wTIW9JG3Hbjt8fiKtyuJvNLHG4",
+      })
+      .expect(401)
+      .expect("Content-Type", /application\/json/);
+
+    expect(response.body.error).toBe("token is missing or invalid");
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const titles = blogsAtEnd.map((blog) => blog.title);
+
+    expect(blogsAtEnd).toHaveLength(helper.initBlogs.length);
+    expect(titles).not.toContain("Learning fullstack");
+  });
 });
 
 describe("deletion of a blog", () => {
@@ -151,6 +199,46 @@ describe("deletion of a blog", () => {
 
     expect(blogsAtEnd).toHaveLength(helper.initBlogs.length - 1);
     expect(titles).not.toContain(blogToDelete.title);
+  });
+
+  test("delete a blog without token", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    const response = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjYxNWIyMTQ5ZmJmNDNiNzRmNWE3NTg1YiIsImlhdCI6MTYzMzM2MjI1NH0.jubqmGYPlnJiqAae5wTIW9JG3Hbjt8fiKtyuJvNLHG4",
+      })
+      .expect(403)
+      .expect("Content-Type", /application\/json/);
+
+    expect(response.body.error).toBe("permission denied");
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const titles = blogsAtEnd.map((blog) => blog.title);
+
+    expect(blogsAtEnd).toHaveLength(helper.initBlogs.length);
+    expect(titles).toContain(blogToDelete.title);
+  });
+
+  test("delete a blog with an invalid token", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    const response = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(403)
+      .expect("Content-Type", /application\/json/);
+
+    expect(response.body.error).toBe("permission denied");
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const titles = blogsAtEnd.map((blog) => blog.title);
+
+    expect(blogsAtEnd).toHaveLength(helper.initBlogs.length);
+    expect(titles).toContain(blogToDelete.title);
   });
 });
 
