@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -9,6 +10,8 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(true);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -22,6 +25,12 @@ const App = () => {
       blogService.setToken(parsedUserInfo.token);
     }
   }, []);
+
+  const noti = (message, isSuccess = true) => {
+    setMessage(message);
+    setIsSuccess(isSuccess);
+    setTimeout(() => setMessage(null), 3000);
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -37,7 +46,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      console.log("Wrong credentials");
+      noti("Wrong username or password", false);
     }
   };
 
@@ -45,6 +54,7 @@ const App = () => {
     setUser(null);
     window.localStorage.removeItem("loggedUserInfo");
     blogService.setToken(undefined);
+    noti("Logged out successfully!");
   };
 
   const loginForm = () => {
@@ -84,7 +94,7 @@ const App = () => {
           {`${user.username} logged in`}
           <button onClick={handleLogout}>logout</button>
         </div>
-        <BlogForm blogs={blogs} setBlogs={setBlogs} />
+        <BlogForm blogs={blogs} setBlogs={setBlogs} noti={noti} />
         <div>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
@@ -94,7 +104,12 @@ const App = () => {
     );
   };
 
-  return <div>{user === null ? loginForm() : blogList()}</div>;
+  return (
+    <div>
+      {message && <Notification message={message} isSuccess={isSuccess} />}
+      {user === null ? loginForm() : blogList()}
+    </div>
+  );
 };
 
 export default App;
