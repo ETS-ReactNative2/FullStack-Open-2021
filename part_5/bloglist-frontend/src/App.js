@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
+import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
@@ -70,7 +71,7 @@ const App = () => {
         noteFormRef.current.toggleVisibility();
       })
       .catch((error) => {
-        noti(error?.response?.data?.error || "Failed to add new blog", false);
+        noti(error.response.data.error || "Failed to add new blog", false);
       });
   };
 
@@ -98,35 +99,6 @@ const App = () => {
         })
         .catch(() => noti("Failed to remove blog", false));
     }
-  };
-
-  const loginForm = () => {
-    return (
-      <>
-        <h2>Log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            username:
-            <input
-              type="text"
-              name="Username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-          </div>
-          <div>
-            password:
-            <input
-              type="text"
-              name="Password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </>
-    );
   };
 
   const blogList = () => {
@@ -159,7 +131,17 @@ const App = () => {
   return (
     <div>
       {message && <Notification message={message} isSuccess={isSuccess} />}
-      {user === null ? loginForm() : blogList()}
+      {user === null ? (
+        <LoginForm
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+        />
+      ) : (
+        blogList()
+      )}
     </div>
   );
 };
