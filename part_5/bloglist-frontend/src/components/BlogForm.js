@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import blogService from "../services/blogs";
 
-const BlogForm = ({ blogs, setBlogs, noti }) => {
+const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -13,17 +12,7 @@ const BlogForm = ({ blogs, setBlogs, noti }) => {
       author,
       url,
     };
-
-    blogService
-      .create(newBlog)
-      .then((savedBlog) => {
-        setBlogs(blogs.concat(savedBlog));
-        noti(`A new blog ${savedBlog.title} by ${savedBlog.author}`);
-      })
-      .catch((error) => {
-        noti(error?.response?.data?.error || "Failed to add new blog", false);
-      });
-
+    createBlog(newBlog);
     setTitle("");
     setAuthor("");
     setUrl("");
