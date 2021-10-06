@@ -73,6 +73,18 @@ const App = () => {
       });
   };
 
+  const likeBlog = (blogToUpdate) => {
+    blogService
+      .update(blogToUpdate)
+      .then((updatedBlog) =>
+        setBlogs(
+          blogs.map((blog) =>
+            blog.id === blogToUpdate.id ? updatedBlog : blog
+          )
+        )
+      );
+  };
+
   const loginForm = () => {
     return (
       <>
@@ -114,9 +126,11 @@ const App = () => {
           <BlogForm createBlog={createBlog} />
         </Togglable>
         <div>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          {blogs
+            .sort((a, b) => a.likes < b.likes)
+            .map((blog) => (
+              <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+            ))}
         </div>
       </>
     );
