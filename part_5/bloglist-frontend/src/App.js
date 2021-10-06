@@ -64,6 +64,7 @@ const App = () => {
     blogService
       .create(newBlog)
       .then((savedBlog) => {
+        savedBlog.user = user;
         setBlogs(blogs.concat(savedBlog));
         noti(`A new blog ${savedBlog.title} by ${savedBlog.author}`);
         noteFormRef.current.toggleVisibility();
@@ -83,6 +84,20 @@ const App = () => {
           )
         )
       );
+  };
+
+  const removeBlog = (blogToRemove) => {
+    if (
+      window.confirm(`Remove ${blogToRemove.title} by ${blogToRemove.author}`)
+    ) {
+      blogService
+        .remove(blogToRemove.id)
+        .then(() => {
+          noti(`Removed blog ${blogToRemove.title} successfully.`);
+          setBlogs(blogs.filter((blog) => blog.id !== blogToRemove.id));
+        })
+        .catch(() => noti("Failed to remove blog", false));
+    }
   };
 
   const loginForm = () => {
@@ -129,7 +144,12 @@ const App = () => {
           {blogs
             .sort((a, b) => a.likes < b.likes)
             .map((blog) => (
-              <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                likeBlog={likeBlog}
+                removeBlog={removeBlog}
+              />
             ))}
         </div>
       </>
