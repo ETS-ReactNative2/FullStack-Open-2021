@@ -39,6 +39,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
+      0;
       const res = await loginService.login({
         username,
         password,
@@ -114,7 +115,7 @@ const App = () => {
         </Togglable>
         <div>
           {blogs
-            .sort((a, b) => a.likes < b.likes)
+            .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
               <Blog
                 key={blog.id}

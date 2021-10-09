@@ -9,7 +9,11 @@ const Notification = ({ message, isSuccess }) => {
     backgroundColor: "lightgrey",
     padding: "10px",
   };
-  return <div style={styleNoti}>{message}</div>;
+  return (
+    <div className={isSuccess ? "success" : "error"} style={styleNoti}>
+      {message}
+    </div>
+  );
 };
 
 export default Notification;

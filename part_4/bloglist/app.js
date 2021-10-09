@@ -10,6 +10,7 @@ const LoginRouter = require("./controllers/login");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const mongoose = require("mongoose");
+const { response } = require("express");
 
 const mongoUrl = config.MONGODB_URI;
 
@@ -32,6 +33,11 @@ app.use(middleware.requestLogger);
 app.use("/api/blogs", BlogRouter);
 app.use("/api/users", UserRouter);
 app.use("/api/login", LoginRouter);
+
+if (process.env.NODE_ENV === "test") {
+  const TestingRouter = require("./controllers/testing");
+  app.use("/api/testing", TestingRouter);
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
