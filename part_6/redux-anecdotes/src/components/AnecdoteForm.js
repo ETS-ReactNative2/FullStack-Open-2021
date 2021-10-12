@@ -1,13 +1,11 @@
 import React from "react";
 import { createAnecdote } from "../reducers/anecdoteReducer";
-import { useDispatch } from "react-redux";
+import { connect } from "react-redux";
 
-const AnecdoteForm = () => {
-  const dispatch = useDispatch();
-
+const AnecdoteForm = (props) => {
   const addAnecdote = async (event) => {
     event.preventDefault();
-    dispatch(createAnecdote(event.target.content.value));
+    props.createAnecdote(event.target.content.value);
     event.target.content.value = "";
   };
 
@@ -24,4 +22,5 @@ const AnecdoteForm = () => {
   );
 };
 
-export default AnecdoteForm;
+// pass { createAnecdote } instead of creating a mapDispatchToProps function
+export default connect(null, { createAnecdote })(AnecdoteForm);
