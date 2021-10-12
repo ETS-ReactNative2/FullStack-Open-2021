@@ -1,3 +1,4 @@
+let delayMessage;
 const reducer = (state = "", action) => {
   switch (action.type) {
     case "SET_NOTI":
@@ -11,12 +12,15 @@ const reducer = (state = "", action) => {
 
 export const updateNotification = (message, delayTime) => {
   return async (dispatch) => {
+    clearTimeout(delayMessage);
+    delayMessage = setTimeout(
+      () => dispatch({ type: "CLEAR_NOTI" }),
+      delayTime * 1000
+    );
     dispatch({
       type: "SET_NOTI",
       message,
     });
-
-    setTimeout(() => dispatch({ type: "CLEAR_NOTI" }), delayTime * 1000);
   };
 };
 
