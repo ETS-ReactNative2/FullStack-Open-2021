@@ -13,7 +13,7 @@ const reducer = (state = null, action) => {
 
 export const userLogin = (user) => {
   return async (dispatch) => {
-    window.localStorage.setItem("loggedUserInfo", JSON.stringify(user.token));
+    window.localStorage.setItem("loggedUserInfo", JSON.stringify(user));
     blogService.setToken(user.token);
     dispatch({
       type: "USER_LOGIN",

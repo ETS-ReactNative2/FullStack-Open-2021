@@ -12,6 +12,11 @@ const getAll = () => {
   return request.then((response) => response.data);
 };
 
+const get = (id) => {
+  const request = axios.get(`${baseUrl}/${id}`);
+  return request.then((response) => response.data);
+};
+
 const create = (newBlog) => {
   const config = {
     headers: {
@@ -39,4 +44,4 @@ const remove = (id) => {
   return request.then((response) => response);
 };
 
-export default { getAll, create, update, remove, setToken };
+export default { getAll, get, create, update, remove, setToken };

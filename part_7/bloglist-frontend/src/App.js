@@ -3,15 +3,15 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Users from "./components/Users";
 import User from "./components/User";
+import BlogDetail from "./components/BlogDetail";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
-import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { updateNotification } from "./reducer/notificationReducer";
-import { initBlogs } from "./reducer/blogReducer";
+import { initBlogs, createNewBlog } from "./reducer/blogReducer";
 import { userLogin, userLogout } from "./reducer/userReducer";
 
 const App = () => {
@@ -29,15 +29,25 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserInfo = window.localStorage.getItem("loggedUserInfo");
-    if (loggedUserInfo && loggedUserInfo.token) {
+
+    if (loggedUserInfo) {
       const parsedUserInfo = JSON.parse(loggedUserInfo);
-      console.log("parsedUserInfo: ", parsedUserInfo);
       dispatch(userLogin(parsedUserInfo));
     }
   }, []);
 
   const noti = (message, isSuccess = true) => {
     dispatch(updateNotification(message, isSuccess));
+  };
+
+  const createBlog = async (newBlog) => {
+    try {
+      noteFormRef.current.toggleVisibility();
+      await dispatch(createNewBlog(newBlog));
+      noti(`A new blog ${newBlog.title} by ${newBlog.author}`);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleLogin = async (event) => {
@@ -63,10 +73,11 @@ const App = () => {
   };
 
   const Blogs = ({ blogs }) => {
+    console.log("render blogs");
     return (
       <>
         <Togglable ref={noteFormRef}>
-          <BlogForm noti={noti} />
+          <BlogForm noti={noti} createBlog={createBlog} />
         </Togglable>
         <div>
           {blogs &&
@@ -80,16 +91,8 @@ const App = () => {
     );
   };
 
-  const blogList = () => {
-    return (
-      <>
-        <h2>blogs</h2>
-        <div>
-          {`${user.username} logged in`}
-          <button onClick={handleLogout}>logout</button>
-        </div>
-      </>
-    );
+  const padding = {
+    padding: "5px",
   };
 
   return (
@@ -110,11 +113,24 @@ const App = () => {
         />
       ) : (
         <>
-          <div>{blogList()}</div>
           <Router>
+            <div>
+              <Link style={padding} to="/">
+                blogs
+              </Link>
+              <Link style={padding} to="/users">
+                users
+              </Link>
+              {`${user.username} logged in`}
+              <button onClick={handleLogout}>logout</button>
+            </div>
+            <h2>blogs</h2>
             <Switch>
               <Route path="/users/:id">
                 <User />
+              </Route>
+              <Route path="/blogs/:id">
+                <BlogDetail />
               </Route>
               <Route path="/users">
                 <Users />

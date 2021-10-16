@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { likeABlog, deleteBlog } from "../reducer/blogReducer";
+import { Link } from "react-router-dom";
 
 const Blog = ({ blog, user, noti }) => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const Blog = ({ blog, user, noti }) => {
 
   return (
     <div className="blog" style={blogStyle}>
-      {blog.title}
+      <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
       <button onClick={handleShowDetail}>{showDetail ? "hide" : "view"}</button>
       {showDetail && (
         <>
