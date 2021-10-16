@@ -1,9 +1,22 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createNewBlog } from "../reducer/blogReducer";
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ noti }) => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+
+  const createBlog = async (newBlog) => {
+    try {
+      await dispatch(createNewBlog(newBlog));
+      noti(`A new blog ${newBlog.title} by ${newBlog.author}`);
+      noteFormRef.current.toggleVisibility();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleCreateBlog = (event) => {
     event.preventDefault();

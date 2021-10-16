@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { likeABlog, deleteBlog } from "../reducer/blogReducer";
 
-const Blog = ({ blog, likeBlog, removeBlog, user }) => {
+const Blog = ({ blog, user, noti }) => {
+  const dispatch = useDispatch();
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,6 +14,27 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
 
   const [showDetail, setShowDetail] = useState(false);
   const handleShowDetail = () => setShowDetail(!showDetail);
+
+  const likeBlog = async (blogToUpdate) => {
+    try {
+      await dispatch(likeABlog(blogToUpdate));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const removeBlog = async (blogToRemove) => {
+    if (
+      window.confirm(`Remove ${blogToRemove.title} by ${blogToRemove.author}`)
+    ) {
+      try {
+        await dispatch(deleteBlog(blogToRemove));
+        noti(`Removed blog ${blogToRemove.title} successfully.`);
+      } catch (err) {
+        noti("Failed to remove blog", false);
+      }
+    }
+  };
 
   return (
     <div className="blog" style={blogStyle}>
