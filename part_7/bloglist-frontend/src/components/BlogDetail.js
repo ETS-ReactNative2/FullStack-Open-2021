@@ -36,6 +36,15 @@ const BlogDetail = () => {
         <button onClick={() => likeBlog(blog)}>like</button>
       </div>
       <div>added by {blog.author}</div>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments &&
+          blog.comments.map((comment) => (
+            <li key={`${blog.id}-${Math.trunc(Math.random() * 1000000)}`}>
+              {comment}
+            </li>
+          ))}
+      </ul>
     </>
   );
 };

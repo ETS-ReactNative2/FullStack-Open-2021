@@ -19,6 +19,11 @@ const Blog = ({ blog, user, noti }) => {
   const likeBlog = async (blogToUpdate) => {
     try {
       await dispatch(likeABlog(blogToUpdate));
+      const likedBlog = {
+        ...blog,
+      };
+      likedBlog.likes++;
+      setBlog(likedBlog);
     } catch (err) {
       console.log(err);
     }
