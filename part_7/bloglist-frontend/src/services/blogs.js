@@ -34,6 +34,11 @@ const update = (blogToUpdate) => {
   return request.then((response) => response.data);
 };
 
+const comment = (blog, comment) => {
+  const request = axios.put(`${baseUrl}/${blog.id}/comments`, { comment });
+  return request.then((response) => response.data);
+};
+
 const remove = (id) => {
   const config = {
     headers: {
@@ -44,4 +49,4 @@ const remove = (id) => {
   return request.then((response) => response);
 };
 
-export default { getAll, get, create, update, remove, setToken };
+export default { getAll, get, create, update, remove, setToken, comment };
