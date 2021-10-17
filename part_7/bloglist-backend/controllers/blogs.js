@@ -57,14 +57,16 @@ BlogRouter.put("/:id", async (request, response) => {
     likes: request.body.likes,
   };
 
-  const updatedBlog = await Blog.findByIdAndUpdate(id, newBlog, { new: true });
+  const updatedBlog = await Blog.findByIdAndUpdate(id, newBlog, {
+    new: true,
+  }).populate("user");
   response.json(updatedBlog);
 });
 
-BlogRouter.post("/:id/comments", async (request, response) => {
+BlogRouter.put("/:id/comments", async (request, response) => {
   const id = request.params.id;
   const comment = request.body.comment;
-  const blogToUpdate = await Blog.findById(id);
+  const blogToUpdate = await Blog.findById(id).populate("user");
   const newBlog = {
     comments: blogToUpdate?.comments
       ? blogToUpdate.comments.concat(comment)

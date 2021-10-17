@@ -3,8 +3,16 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import blogService from "../services/blogs";
 import { likeABlog, commentBlog } from "../reducer/blogReducer";
+import { Form, Button, ListGroup, Card } from "react-bootstrap";
 
 const BlogDetail = () => {
+  const formStyle = {
+    marginBottom: 10,
+  };
+
+  const commentStyle = {
+    marginTop: 30,
+  };
   const dispatch = useDispatch();
   const id = useParams().id;
   const [blog, setBlog] = useState(null);
@@ -45,28 +53,50 @@ const BlogDetail = () => {
   if (!blog) return null;
 
   return (
-    <>
-      <h2>{blog.title}</h2>
-      <a href={blog.url}>{blog.url}</a>
-      <div>
-        likes {blog.likes}
-        <button onClick={() => likeBlog(blog)}>like</button>
-      </div>
-      <div>added by {blog.author}</div>
-      <h3>comments</h3>
-      <form onSubmit={handleAddComment}>
-        <input value={comment} onChange={handleChangeComment} />
-        <button type="submit">Comment</button>
-      </form>
-      <ul>
+    <div className="container">
+      <Card style={{ width: "100%" }}>
+        <Card.Body>
+          <Card.Title>
+            <h2>{blog.title}</h2>
+          </Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">
+            {blog.author}
+          </Card.Subtitle>
+          <Card.Text>
+            <a href={blog.url}>{blog.url}</a>
+          </Card.Text>
+          <Card.Text>
+            likes {blog.likes}
+            <Button
+              style={{ marginLeft: 10 }}
+              size="sm"
+              onClick={() => likeBlog(blog)}
+            >
+              like
+            </Button>
+          </Card.Text>
+        </Card.Body>
+      </Card>
+      <h5 style={commentStyle}>comments</h5>
+      <Form style={formStyle} onSubmit={handleAddComment}>
+        <Form.Group>
+          <Form.Control value={comment} onChange={handleChangeComment} />
+          <Button size="sm" type="submit">
+            Comment
+          </Button>
+        </Form.Group>
+      </Form>
+      <ListGroup>
         {blog.comments &&
           blog.comments.map((comment) => (
-            <li key={`${blog.id}-${Math.trunc(Math.random() * 1000000)}`}>
+            <ListGroup.Item
+              key={`${blog.id}-${Math.trunc(Math.random() * 1000000)}`}
+            >
               {comment}
-            </li>
+            </ListGroup.Item>
           ))}
-      </ul>
-    </>
+      </ListGroup>
+    </div>
   );
 };
 

@@ -13,8 +13,15 @@ import loginService from "./services/login";
 import { updateNotification } from "./reducer/notificationReducer";
 import { initBlogs, createNewBlog } from "./reducer/blogReducer";
 import { userLogin, userLogout } from "./reducer/userReducer";
+import { Container, Button, Navbar, Nav } from "react-bootstrap";
 
 const App = () => {
+  const headingStyle = {
+    color: "#456268",
+    textAlign: "center",
+    fontWeight: 900,
+    paddingTop: 30,
+  };
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
@@ -73,20 +80,19 @@ const App = () => {
   };
 
   const Blogs = ({ blogs }) => {
-    console.log("render blogs");
     return (
       <>
         <Togglable ref={noteFormRef}>
           <BlogForm noti={noti} createBlog={createBlog} />
         </Togglable>
-        <div>
+        <Container>
           {blogs &&
             blogs
               .sort((a, b) => b.likes - a.likes)
               .map((blog) => (
                 <Blog key={blog.id} blog={blog} user={user} noti={noti} />
               ))}
-        </div>
+        </Container>
       </>
     );
   };
@@ -96,7 +102,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className="containter">
       {notification.message && (
         <Notification
           message={notification.message}
@@ -115,16 +121,32 @@ const App = () => {
         <>
           <Router>
             <div>
-              <Link style={padding} to="/">
-                blogs
-              </Link>
-              <Link style={padding} to="/users">
-                users
-              </Link>
-              {`${user.username} logged in`}
-              <button onClick={handleLogout}>logout</button>
+              <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="mr-auto">
+                    <Nav.Link href="#" as="span">
+                      <Link style={padding} to="/">
+                        blogs
+                      </Link>
+                    </Nav.Link>
+                    <Nav.Link href="#" as="span">
+                      <Link style={padding} to="/users">
+                        users
+                      </Link>
+                    </Nav.Link>
+
+                    <Nav.Link href="#" as="span">
+                      {`${user.username} logged in`}
+                      <Button size="sm" onClick={handleLogout}>
+                        logout
+                      </Button>
+                    </Nav.Link>
+                  </Nav>
+                </Navbar.Collapse>
+              </Navbar>
             </div>
-            <h2>blogs</h2>
+            <h2 style={headingStyle}>BLOGS</h2>
             <Switch>
               <Route path="/users/:id">
                 <User />

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Form, Button } from "react-bootstrap";
 
 const LoginForm = ({
   username,
@@ -9,32 +10,32 @@ const LoginForm = ({
   handleLogin,
 }) => {
   return (
-    <>
+    <div className="container">
       <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username:
-          <input
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control
             id="username"
             type="text"
             name="Username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
-        </div>
-        <div>
-          password:
-          <input
+          <Form.Label>password:</Form.Label>
+          <Form.Control
             id="password"
             type="text"
             name="Password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>
+          <Button size="sm" type="submit">
+            login
+          </Button>
+        </Form.Group>
+      </Form>
+    </div>
   );
 };
 

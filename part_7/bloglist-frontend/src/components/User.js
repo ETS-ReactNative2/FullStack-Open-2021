@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import userService from "../services/user";
+import { ListGroup } from "react-bootstrap";
 
 const User = () => {
   const [user, setUser] = useState(null);
@@ -15,15 +16,15 @@ const User = () => {
   );
   if (!user) return null;
   return (
-    <>
-      <h2>{user.username}</h2>
-      <h3>added blogs</h3>
-      <ul>
+    <div className="container">
+      <h2 style={{ fontWeight: 600 }}>{user.username}</h2>
+      <h5>added blogs</h5>
+      <ListGroup>
         {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
+          <ListGroup.Item key={blog.id}>{blog.title}</ListGroup.Item>
         ))}
-      </ul>
-    </>
+      </ListGroup>
+    </div>
   );
 };
 

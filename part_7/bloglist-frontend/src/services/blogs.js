@@ -35,6 +35,10 @@ const update = (blogToUpdate) => {
 };
 
 const comment = (blog, comment) => {
+  const blogToUpdate = { ...blog };
+  blogToUpdate.comments = blogToUpdate.comments
+    ? blogToUpdate.comments.concat(comment)
+    : [comment];
   const request = axios.put(`${baseUrl}/${blog.id}/comments`, { comment });
   return request.then((response) => response.data);
 };

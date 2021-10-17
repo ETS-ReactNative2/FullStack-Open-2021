@@ -1,17 +1,10 @@
 import React from "react";
+import { Alert } from "react-bootstrap";
 
 const Notification = ({ message, isSuccess }) => {
-  const styleNoti = {
-    border: "3px solid",
-    borderRadius: "10px",
-    borderColor: isSuccess ? "green" : "red",
-    color: isSuccess ? "green" : "red",
-    backgroundColor: "lightgrey",
-    padding: "10px",
-  };
   return (
-    <div className={isSuccess ? "success" : "error"} style={styleNoti}>
-      {message}
+    <div className="container">
+      <Alert variant={isSuccess ? "success" : "danger"}>{message}</Alert>
     </div>
   );
 };
