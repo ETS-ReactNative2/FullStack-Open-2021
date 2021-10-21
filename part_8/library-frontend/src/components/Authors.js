@@ -8,7 +8,16 @@ const Authors = (props) => {
 
   const result = useQuery(GET_AUTHORS);
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
-    refetchQueries: [{ query: GET_AUTHORS }],
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: GET_AUTHORS });
+      store.writeQuery({
+        query: GET_AUTHORS,
+        data: {
+          ...dataInStore,
+          allAuthors: [...dataInStore.allAuthors, response.data.addAuthor],
+        },
+      });
+    },
   });
 
   if (!props.show) {

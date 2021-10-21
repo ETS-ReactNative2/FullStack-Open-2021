@@ -5,15 +5,12 @@ import { CURRENT_USER, GET_BOOKS } from "../queries";
 const Recommendation = (props) => {
   const [getBooks, result] = useLazyQuery(GET_BOOKS);
   const currentUser = useQuery(CURRENT_USER);
-  const filter = currentUser?.data?.me?.favoriteGenre || "all";
+  const filter = currentUser?.data?.me?.favoriteGenre;
 
   useEffect(() => {
-    if (filter !== "all") {
-      getBooks({ variables: { genre: filter } });
-    } else {
-      getBooks();
-    }
-  }, [filter]);
+    if (filter === "all") getBooks();
+    else getBooks({ variables: { genre: filter } });
+  }, [filter]); // eslint-disable-line
 
   if (!props.show) {
     return null;

@@ -41,6 +41,7 @@ export const CREATE_BOOK = gql`
         name
       }
       published
+      genres
     }
   }
 `;
@@ -64,7 +65,7 @@ export const LOGIN = gql`
 `;
 
 export const CURRENT_USER = gql`
-  query {
+  query getUser {
     me {
       username
       favoriteGenre

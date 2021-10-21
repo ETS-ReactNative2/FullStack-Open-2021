@@ -6,7 +6,7 @@ import FilterButton from "./FilterButton";
 const Books = (props) => {
   const [filter, setFilter] = useState("all");
   const [getBooks, result] = useLazyQuery(GET_BOOKS);
-  useEffect(() => getBooks(), []);
+  useEffect(() => getBooks(), []); // eslint-disable-line
 
   if (!props.show) {
     return null;

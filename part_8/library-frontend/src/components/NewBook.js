@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
-import { CREATE_BOOK, GET_BOOKS, GET_AUTHORS } from "../queries";
+import { CREATE_BOOK, GET_BOOKS } from "../queries";
 
 const NewBook = (props) => {
   const [title, setTitle] = useState("");
@@ -14,7 +14,16 @@ const NewBook = (props) => {
       props.setError(error.message);
       setTimeout(() => props.setError(""), 3000);
     },
-    refetchQueries: [{ query: GET_AUTHORS }, { query: GET_BOOKS }],
+    update: (store, response) => {
+      let dataInStore = store.readQuery({ query: GET_BOOKS });
+      store.writeQuery({
+        query: GET_BOOKS,
+        data: {
+          ...dataInStore,
+          allBooks: [...dataInStore.allBooks, response.data.addBook],
+        },
+      });
+    },
   });
 
   if (!props.show) {
