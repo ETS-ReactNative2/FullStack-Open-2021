@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
+import React, { useEffect, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
 import { GET_BOOKS } from "../queries";
 import FilterButton from "./FilterButton";
 
 const Books = (props) => {
   const [filter, setFilter] = useState("all");
-  const result = useQuery(GET_BOOKS);
+  const [getBooks, result] = useLazyQuery(GET_BOOKS);
+  useEffect(() => getBooks(), []);
+
   if (!props.show) {
     return null;
   }

@@ -72,18 +72,9 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      // if (!args.author && !args.genre) return books;
-      // if (args.author && args.genre)
-      //   return books.filter(
-      //     (book) =>
-      //       book.author === args.author &&
-      //       book.genres.includes(args.genre.toLowerCase())
-      //   );
-      // if (args.book) return books.filter((book) => book.author === args.name);
-      // if (args.genre)
-      //   return books.filter((book) =>
-      //     book.genres.includes(args.genre.toLowerCase())
-      //   );
+      if (args.genre) {
+        return Book.find({ genres: args.genre });
+      }
       return Book.find({});
     },
     allAuthors: async () => {
