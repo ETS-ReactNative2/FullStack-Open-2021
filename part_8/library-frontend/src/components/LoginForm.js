@@ -22,7 +22,7 @@ const LoginForm = ({ show, setToken, setError, setPage }) => {
   useEffect(() => {
     if (result.data) {
       const token = result.data.login.value;
-      window.localStorage.setItem("loggedUsers", token);
+      window.localStorage.setItem("loggedUser", token);
       setToken(token);
       setPage("books");
     }

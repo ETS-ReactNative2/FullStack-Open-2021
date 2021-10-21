@@ -10,6 +10,10 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([]);
 
   const [createBook] = useMutation(CREATE_BOOK, {
+    onError: (error) => {
+      props.setError(error.message);
+      setTimeout(() => props.setError(""), 3000);
+    },
     refetchQueries: [{ query: GET_AUTHORS }, { query: GET_BOOKS }],
   });
 
