@@ -1,22 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "@apollo/client";
-import { GET_BOOKS } from "../queries";
-import FilterButton from "./FilterButton";
+import { CURRENT_USER, GET_BOOKS } from "../queries";
 
-const Books = (props) => {
-  const [filter, setFilter] = useState("all");
+const Recommendation = (props) => {
   const result = useQuery(GET_BOOKS);
+  const currentUser = useQuery(CURRENT_USER);
+
   if (!props.show) {
     return null;
   }
+  if (result.loading || currentUser.loading) return <div>loading...</div>;
+  const filter = currentUser?.data?.me?.favoriteGenre || "all";
 
-  if (result.loading) return <div>loading...</div>;
-  const allGenres = [
-    ...new Set(result.data.allBooks.flatMap((book) => book.genres)),
-  ];
   return (
     <div>
-      <h2>books</h2>
+      <h2>recommendations</h2>
       {filter && (
         <p>
           in genre <strong>{filter}</strong>
@@ -42,12 +40,8 @@ const Books = (props) => {
             ))}
         </tbody>
       </table>
-      <FilterButton key="all" genre="all" setFilter={setFilter} />
-      {allGenres.map((genre) => (
-        <FilterButton key={genre} genre={genre} setFilter={setFilter} />
-      ))}
     </div>
   );
 };
 
-export default Books;
+export default Recommendation;
