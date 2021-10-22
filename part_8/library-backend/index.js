@@ -95,10 +95,10 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: async (root) => {
-      const books = await Book.find({ author: root });
-      return books.length;
-    },
+    // bookCount: async (root) => {
+    //   const books = await Book.find({ author: root });
+    //   return books.length;
+    // },
     name: async (root) => {
       const author = await Author.findById(root);
       return author.name;
@@ -113,10 +113,12 @@ const resolvers = {
       const book = new Book({ ...args });
       const author = await Author.findOne({ name: args.author });
       if (!author) {
-        const newAuthor = new Author({ name: args.author });
+        const newAuthor = new Author({ name: args.author, bookCount: 1 });
         const savedAuthor = await newAuthor.save();
         book.author = savedAuthor;
       } else {
+        author.bookCount = author.bookCount + 1;
+        author.save();
         book.author = author;
       }
       try {
