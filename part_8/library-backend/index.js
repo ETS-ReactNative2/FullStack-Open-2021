@@ -9,7 +9,10 @@ const Book = require("./models/book");
 const Author = require("./models/author");
 const User = require("./models/user");
 const jwt = require("jsonwebtoken");
+const { PubSub } = require("graphql-subscriptions");
 require("dotenv").config();
+
+const pubsub = new PubSub();
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -41,7 +44,7 @@ const typeDefs = gql`
     published: Int!
     author: Author!
     genres: [String!]!
-    ID: ID!
+    id: ID!
   }
 
   type Mutation {
@@ -65,6 +68,10 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book]!
     allAuthors: [Author]!
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `;
 
 const resolvers = {
@@ -81,6 +88,10 @@ const resolvers = {
       return Author.find({});
     },
     me: (root, args, context) => context.currentUser,
+  },
+
+  Book: {
+    id: (root) => root._id.toString(),
   },
 
   Author: {
@@ -101,7 +112,6 @@ const resolvers = {
       }
       const book = new Book({ ...args });
       const author = await Author.findOne({ name: args.author });
-      console.log("author: ", author);
       if (!author) {
         const newAuthor = new Author({ name: args.author });
         const savedAuthor = await newAuthor.save();
@@ -116,6 +126,9 @@ const resolvers = {
           invalidArgs: args,
         });
       }
+
+      pubsub.publish("BOOK_ADDED", { bookAdded: book });
+
       return book;
     },
 
@@ -176,6 +189,12 @@ const resolvers = {
       return { value: jwt.sign(userForToken, process.env.SECRET) };
     },
   },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(["BOOK_ADDED"]),
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -192,6 +211,7 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`);
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`);
 });
