@@ -1,4 +1,4 @@
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / ((height * height) / 10000);
   if (height <= 0) throw new Error("Height must be larger than 0");
   if (weight < 0) throw new Error("Weight must be equal or larger than 0");
@@ -10,6 +10,7 @@ const calculateBmi = (height: number, weight: number): string => {
   if (bmi >= 30 && bmi <= 34.9) return "Obese (Class I)";
   if (bmi >= 35 && bmi <= 39.9) return "Obese (Class I@)";
   if (bmi >= 40) return "Obese (Class III)";
+  return "No result";
 };
 
 const heigth: number = Number(process.argv[2]);
