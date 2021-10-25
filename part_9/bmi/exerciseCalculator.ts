@@ -8,7 +8,7 @@ interface Result {
   average: number;
 }
 
-const calulateExcercise = (
+export const calulateExcercise = (
   exerciseHours: Array<number>,
   target: number
 ): Result => {
@@ -45,6 +45,4 @@ const exerciseHours: Array<number> = process.argv
   .splice(3)
   .map((arg) => Number(arg));
 
-console.log(exerciseHours);
-
-console.log(calulateExcercise(exerciseHours, target));
+// console.log(calulateExcercise(exerciseHours, target));
