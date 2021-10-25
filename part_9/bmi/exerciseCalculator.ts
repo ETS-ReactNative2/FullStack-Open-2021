@@ -40,7 +40,7 @@ const calulateExcercise = (
   };
 };
 
-const target: number = Number(process.argv[2]);
+const target = Number(process.argv[2]);
 const exerciseHours: Array<number> = process.argv
   .splice(3)
   .map((arg) => Number(arg));
