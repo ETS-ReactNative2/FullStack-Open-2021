@@ -3,13 +3,14 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router";
 import { Container, Icon } from "semantic-ui-react";
 
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
-import { setPatient, useStateValue } from "../state";
+import { setDiagnoses, setPatient, useStateValue } from "../state";
 
 const PatientPage = () => {
-  const [{ currentPatient }, dispatch] = useStateValue();
+  const [{ currentPatient, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+
   useEffect(() => {
     const fetchPatient = async () => {
       try {
@@ -17,6 +18,11 @@ const PatientPage = () => {
           `${apiBaseUrl}/patients/${id}`
         );
         dispatch(setPatient(patient));
+
+        const { data: diagnoses } = await axios.get<Diagnosis[]>(
+          `${apiBaseUrl}/diagnoses`
+        );
+        dispatch(setDiagnoses(diagnoses));
       } catch (error: unknown) {
         let errorMessage = "Something went wrong.";
         if (axios.isAxiosError(error) && error.response) {
@@ -27,6 +33,8 @@ const PatientPage = () => {
     };
     if (!currentPatient || currentPatient?.id !== id) void fetchPatient();
   }, [id]);
+
+  console.log(currentPatient);
 
   return (
     <div className="App">
@@ -45,6 +53,29 @@ const PatientPage = () => {
             </h2>
             <div>ssn: {currentPatient.ssn}</div>
             <div>occupation: {currentPatient.occupation}</div>
+            {currentPatient.entries.length > 0 && (
+              <>
+                <h5>Entries</h5>
+                {currentPatient.entries.map((entry) => (
+                  <p key={entry.id}>
+                    {entry.date} {entry.description}
+                  </p>
+                ))}
+                <ul>
+                  {currentPatient.entries
+                    .filter((entry) => entry.diagnosisCodes)
+                    .flatMap((entry) => entry.diagnosisCodes)
+                    .map((code) => {
+                      const diagnose = diagnoses.find((d) => d.code === code);
+                      return (
+                        <li key={code}>
+                          {code}: {diagnose ? diagnose.name : ""}
+                        </li>
+                      );
+                    })}
+                </ul>
+              </>
+            )}
           </div>
         )}
       </Container>
