@@ -1,14 +1,9 @@
-import patients from "../data/patients.json";
+import patients from "../data/patients";
 import { Patient, NewPatient } from "../type";
 import toNewPatient from "../utils";
 import { v1 as uuid } from "uuid";
 
-const getNonSensitiveInfo = (): Patient[] =>
-  patients.map((patient) => {
-    const newPatient = toNewPatient(patient) as Patient;
-    newPatient.id = patient.id;
-    return newPatient;
-  });
+const getNonSensitiveInfo = (): Patient[] => patients;
 
 const getPatient = (id: string): Patient => {
   const foundPatient = patients.find((patient) => patient.id === id);
