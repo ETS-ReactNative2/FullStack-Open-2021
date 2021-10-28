@@ -1,83 +1,14 @@
 import React, { useEffect } from "react";
-import { Diagnosis, Entry, HealthCheckRating } from "../types";
-import { Card, Icon } from "semantic-ui-react";
+import { Diagnosis, Entry } from "../types";
+import { Card } from "semantic-ui-react";
 import { setDiagnoses, useStateValue } from "../state";
 import axios from "axios";
 import { apiBaseUrl } from "../constants";
+import EntryCom from "./Entry";
 
 interface Entries {
   entries: Entry[];
 }
-
-interface EntryIn {
-  entry: Entry;
-}
-
-interface Rating {
-  rating: HealthCheckRating;
-}
-
-const Rating = ({ rating }: Rating): JSX.Element | null => {
-  switch (rating) {
-    case 0:
-      return <Icon color="green" name="heart" />;
-    case 1:
-      return <Icon color="yellow" name="heart" />;
-    case 2:
-      return <Icon color="orange" name="heart" />;
-    case 3:
-      return <Icon color="red" name="heart" />;
-    default:
-      return null;
-  }
-};
-
-const EntryCom = ({ entry }: EntryIn): JSX.Element | null => {
-  switch (entry.type) {
-    case "Hospital":
-      return (
-        <Card fluid>
-          <Card.Content>
-            <Card.Header>
-              {entry.date} <Icon name="hospital" />
-            </Card.Header>
-            <Card.Meta>
-              <em>{entry.description}</em>
-            </Card.Meta>
-          </Card.Content>
-        </Card>
-      );
-    case "HealthCheck":
-      return (
-        <Card fluid>
-          <Card.Content>
-            <Card.Header>
-              {entry.date} <Icon name="doctor" />
-            </Card.Header>
-            <Card.Meta>
-              <em>{entry.description}</em>
-            </Card.Meta>
-            <Rating rating={entry.healthCheckRating} />
-          </Card.Content>
-        </Card>
-      );
-    case "OccupationalHealthcare":
-      return (
-        <Card fluid>
-          <Card.Content>
-            <Card.Header>
-              {entry.date} <Icon name="stethoscope" />
-            </Card.Header>
-            <Card.Meta>
-              <em>{entry.description}</em>
-            </Card.Meta>
-          </Card.Content>
-        </Card>
-      );
-    default:
-      return null;
-  }
-};
 
 const Entries = ({ entries }: Entries) => {
   const [{ diagnoses }, dispatch] = useStateValue();
