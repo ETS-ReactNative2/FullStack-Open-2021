@@ -30,9 +30,9 @@ const PatientListPage = () => {
       );
       dispatch(addPatient(newPatient));
       closeModal();
-    } catch (e) {
-      console.error(e.response?.data || "Unknown Error");
-      setError(e.response?.data?.error || "Unknown error");
+    } catch (error) {
+      console.error(error.response?.data || "Unknown Error");
+      setError(error.response?.data?.error || "Unknown error");
     }
   };
 

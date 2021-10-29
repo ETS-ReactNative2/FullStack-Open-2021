@@ -1,8 +1,8 @@
-import axios from "axios";
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
 import { Container, Icon } from "semantic-ui-react";
 import Entries from "../components/Entries";
+import axios from "axios";
 
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
