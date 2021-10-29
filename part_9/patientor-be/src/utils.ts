@@ -4,7 +4,6 @@ import {
   TypeEntry,
   EntryWithoutId,
   BaseEntryWithoutId,
-  HealthCheckRating,
 } from "./type";
 
 const isString = (text: unknown): text is string => {
@@ -24,15 +23,15 @@ const isEntryType = (type: any): type is TypeEntry => {
   return Object.values(TypeEntry).includes(type);
 };
 
-const isHealthCheckRating = (rating: any): rating is HealthCheckRating => {
-  return Object.values(HealthCheckRating).includes(rating);
-};
+// const isHealthCheckRating = (rating: any): rating is HealthCheckRating => {
+//   return Object.values(HealthCheckRating).includes(rating);
+// };
 
-const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
-  if (!rating || !isHealthCheckRating(rating))
-    throw new Error("Incorrect or missing rating");
-  return rating;
-};
+// const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
+//   if (Number(rating) < 0 || Number(rating) > 3 || !isHealthCheckRating(rating))
+//     throw new Error("Incorrect or missing rating");
+//   return rating;
+// };
 
 const parseGender = (gender: unknown): Gender => {
   if (!gender || !isGender(gender))
@@ -79,7 +78,6 @@ export const toNewEntry = (object: any): EntryWithoutId => {
     diagnosisCodes: object.diagnosisCodes || [],
   };
   const type = parseEntryType(object.type);
-  // const type = object.type;
 
   switch (type) {
     case "Hospital":
@@ -107,7 +105,8 @@ export const toNewEntry = (object: any): EntryWithoutId => {
     case "HealthCheck": {
       const newEntry: EntryWithoutId = {
         ...newBaseEntry,
-        healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+        // healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+        healthCheckRating: object.healthCheckRating,
         type,
       };
       return newEntry;

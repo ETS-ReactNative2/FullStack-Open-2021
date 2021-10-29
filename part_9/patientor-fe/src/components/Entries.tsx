@@ -30,19 +30,21 @@ const Entries = ({ entries }: Entries) => {
   const entriesData = entries.map((entry: Entry) => {
     switch (entry.type) {
       case "Hospital":
-        return <EntryCom entry={entry} />;
+        return <EntryCom key={entry.id} entry={entry} />;
       case "HealthCheck":
-        return <EntryCom entry={entry} />;
+        return <EntryCom key={entry.id} entry={entry} />;
       case "OccupationalHealthcare":
-        return <EntryCom entry={entry} />;
+        return <EntryCom key={entry.id} entry={entry} />;
       default:
         return assertNevers(entry);
     }
   });
 
-  const entryWithDiagnoseCodes = entries.filter(
-    (entry) => entry.diagnosisCodes
-  );
+  const entryWithDiagnoseCodes = entries
+    .filter((entry) => entry.diagnosisCodes)
+    .flatMap((fiteredEntry) => fiteredEntry.diagnosisCodes);
+
+  const diagnosesToShow = [...new Set(entryWithDiagnoseCodes)];
 
   return (
     <React.Fragment>
@@ -54,16 +56,14 @@ const Entries = ({ entries }: Entries) => {
           <Card fluid>
             <Card.Content>
               <Card.Header>Diagnoses</Card.Header>
-              {entryWithDiagnoseCodes
-                .flatMap((fiteredEntry) => fiteredEntry.diagnosisCodes)
-                .map((code) => {
-                  const diagnose = diagnoses.find((d) => d.code === code);
-                  return (
-                    <Card.Description key={code}>
-                      {code} {diagnose ? diagnose.name : ""}
-                    </Card.Description>
-                  );
-                })}
+              {diagnosesToShow.map((code) => {
+                const diagnose = diagnoses.find((d) => d.code === code);
+                return (
+                  <Card.Description key={code}>
+                    {code} {diagnose ? diagnose.name : ""}
+                  </Card.Description>
+                );
+              })}
             </Card.Content>
           </Card>
         )}

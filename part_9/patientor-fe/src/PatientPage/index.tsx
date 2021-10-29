@@ -1,16 +1,27 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
-import { Container, Icon } from "semantic-ui-react";
+import { Container, Icon, Button } from "semantic-ui-react";
 import Entries from "../components/Entries";
 import axios from "axios";
 
-import { Patient } from "../types";
+import { Entry, EntryWithoutId, Patient } from "../types";
 import { apiBaseUrl } from "../constants";
-import { setPatient, useStateValue } from "../state";
+import { addEntry, setPatient, useStateValue } from "../state";
+import AddEntryModal from "../AddEntryModal";
 
 const PatientPage = () => {
   const [{ currentPatient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -30,7 +41,31 @@ const PatientPage = () => {
     if (!currentPatient || currentPatient?.id !== id) void fetchPatient();
   }, [id]);
 
-  console.log(currentPatient);
+  const submitNewEntry = async (values: EntryWithoutId) => {
+    try {
+      if (values.type === "HealthCheck") {
+        const formattedValues = {
+          ...values,
+          healthCheckRating: Number(values.healthCheckRating),
+        };
+        const { data: newEntry } = await axios.post<Entry>(
+          `${apiBaseUrl}/patients/${id}/entries`,
+          formattedValues
+        );
+        dispatch(addEntry(id, newEntry));
+      } else {
+        const { data: newEntry } = await axios.post<Entry>(
+          `${apiBaseUrl}/patients/${id}/entries`,
+          values
+        );
+        dispatch(addEntry(id, newEntry));
+      }
+      closeModal();
+    } catch (error) {
+      console.error(error.response?.data || "Unknown Error");
+      setError(error.response?.data?.error || "Unknown error");
+    }
+  };
 
   return (
     <div className="App">
@@ -54,6 +89,15 @@ const PatientPage = () => {
             )}
           </div>
         )}
+        <AddEntryModal
+          modalOpen={modalOpen}
+          onSubmit={submitNewEntry}
+          error={error}
+          onClose={closeModal}
+        />
+        <Button style={{ marginTop: "20px" }} onClick={() => openModal()}>
+          Add New Entry
+        </Button>
       </Container>
     </div>
   );
