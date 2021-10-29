@@ -76,6 +76,7 @@ export const toNewEntry = (object: any): EntryWithoutId => {
     description: parseText(object.description, "description"),
     date: parseDate(object.date),
     specialist: parseText(object.specialist, "specialist"),
+    diagnosisCodes: object.diagnosisCodes || [],
   };
   const type = parseEntryType(object.type);
   // const type = object.type;
