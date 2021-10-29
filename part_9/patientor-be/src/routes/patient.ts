@@ -17,12 +17,8 @@ router.post("/", (req, res) => {
     const newPatient = toNewPatient(req.body);
     const addedPatient = patientService.addNewPatient(newPatient);
     res.json(addedPatient);
-  } catch (error) {
-    let errorMessage = "Something went wrong.";
-    if (error instanceof Error) {
-      errorMessage += " Error: " + error.message;
-    }
-    res.status(400).send(errorMessage);
+  } catch (error: any) {
+    res.status(400).send({ message: error.message });
   }
 });
 
@@ -32,12 +28,8 @@ router.post("/:id/entries", (req, res) => {
     const newEntry = toNewEntry(req.body);
     const addedEntry = patientService.addEntry(id, newEntry);
     res.json(addedEntry);
-  } catch (error) {
-    let errorMessage = "Something went wrong.";
-    if (error instanceof Error) {
-      errorMessage += " Error: " + error.message;
-    }
-    res.status(400).send(errorMessage);
+  } catch (error: any) {
+    res.status(400).send({ message: error.message });
   }
 });
 

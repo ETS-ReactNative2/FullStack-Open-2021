@@ -32,7 +32,7 @@ const PatientListPage = () => {
       closeModal();
     } catch (error) {
       console.error(error.response?.data || "Unknown Error");
-      setError(error.response?.data?.error || "Unknown error");
+      setError(error.response?.data?.message || "Unknown error");
     }
   };
 
