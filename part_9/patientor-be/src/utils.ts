@@ -65,7 +65,7 @@ export const toNewPatient = (object: any): NewPatient => {
     dateOfBirth: parseDate(object.dateOfBirth),
     ssn: parseText(object.ssn, "ssn"),
     occupation: parseText(object.occupation, "occupation"),
-    entries: object.entries,
+    entries: object.entries || [],
   };
   return newEntry;
 };
@@ -84,8 +84,8 @@ export const toNewEntry = (object: any): EntryWithoutId => {
       const newEntry: EntryWithoutId = {
         ...newBaseEntry,
         discharge: {
-          date: parseDate(object.discharge.date),
-          criteria: parseText(object.discharge.criteria, "criteria"),
+          date: parseDate(object.dischargeDate),
+          criteria: parseText(object.criteria, "criteria"),
         },
         type,
       };
@@ -95,8 +95,8 @@ export const toNewEntry = (object: any): EntryWithoutId => {
         ...newBaseEntry,
         employerName: parseText(object.employerName, "employerName"),
         sickLeave: {
-          startDate: parseDate(object.sickLeave.startDate),
-          endDate: parseDate(object.sickLeave.endDate),
+          startDate: parseDate(object.startDate),
+          endDate: parseDate(object.endDate),
         },
         type,
       };

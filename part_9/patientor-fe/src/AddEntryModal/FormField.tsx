@@ -1,7 +1,7 @@
 import React from "react";
 import { ErrorMessage, Field, FieldProps, FormikProps } from "formik";
 import { Dropdown, DropdownProps, Form } from "semantic-ui-react";
-import { Diagnosis, HealthCheckRating } from "../types";
+import { Diagnosis, HealthCheckRating, EntryType } from "../types";
 
 // structure of a single option
 export type RatingOption = {
@@ -9,22 +9,29 @@ export type RatingOption = {
   label: string;
 };
 
+export type TypeOption = {
+  value: EntryType;
+  label: string;
+};
+
 // props for select field component
 type SelectFieldProps = {
+  value?: string;
   name: string;
   label: string;
-  options: RatingOption[];
+  options: RatingOption[] | TypeOption[];
 };
 
 export const SelectField = ({ name, label, options }: SelectFieldProps) => (
   <Form.Field>
     <label>{label}</label>
     <Field as="select" name={name} className="ui dropdown">
-      {options.map((option) => (
-        <option key={option.value} value={Number(option.value)}>
+      {options.map((option: RatingOption | TypeOption) => (
+        <option key={option.value} value={option.value}>
           {option.label || option.value}
         </option>
       ))}
+      onChange={() => console.log("mewo")}
     </Field>
   </Form.Field>
 );

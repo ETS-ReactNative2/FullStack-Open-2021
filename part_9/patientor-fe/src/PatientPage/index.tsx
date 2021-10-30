@@ -43,6 +43,7 @@ const PatientPage = () => {
 
   const submitNewEntry = async (values: EntryWithoutId) => {
     try {
+      console.log(values);
       if (values.type === "HealthCheck") {
         const formattedValues = {
           ...values,
@@ -61,8 +62,8 @@ const PatientPage = () => {
         dispatch(addEntry(id, newEntry));
       }
       closeModal();
-    } catch (error: any) {
-      console.error(error.response?.data || "Unknown Error");
+    } catch (error) {
+      console.error(error.response?.data?.message || "Unknown Error");
       setError(error.response?.data?.message || "Unknown error");
     }
   };
