@@ -21,7 +21,11 @@ const User = () => {
       <h5>added blogs</h5>
       <ListGroup>
         {user.blogs.map((blog) => (
-          <ListGroup.Item key={blog.id}>{blog.title}</ListGroup.Item>
+          <ListGroup.Item key={blog.id}>
+            <a href={blog.url} target="_blank">
+              {blog.title}
+            </a>
+          </ListGroup.Item>
         ))}
       </ListGroup>
     </div>

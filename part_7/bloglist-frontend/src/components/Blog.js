@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
 
 const Blog = ({ blog, user, noti }) => {
+  console.log("user: ", user.id, typeof user.id);
+  console.log("blog: ", blog.user.id, typeof blog.user.id);
+
   const dispatch = useDispatch();
   const blogStyle = {
     padding: 10,
@@ -85,7 +88,7 @@ const Blog = ({ blog, user, noti }) => {
             <Row>
               <Col lg={11}></Col>
               <Col lg={1}>
-                {user.username === blog.user.username && (
+                {(user.id === blog.user?.id || user.id === blog.user) && (
                   <Button
                     size="sm"
                     variant="danger"
